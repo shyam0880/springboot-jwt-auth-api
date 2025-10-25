@@ -10,4 +10,9 @@ public class HelloController {
     public String getGreeting(){
         return "Hello! Good Morning.";
     }
+    
+    @GetMapping("/security_details")
+    public String securityDetails() {
+    	return "File contains security details.";
+    }
 }
