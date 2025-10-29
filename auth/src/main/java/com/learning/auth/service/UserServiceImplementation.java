@@ -1,8 +1,14 @@
 package com.learning.auth.service;
 
-import java.util.Optional;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +17,9 @@ import com.learning.auth.repository.UserRepository;
 
 @Service
 public class UserServiceImplementation implements UserService {
+	
+	@Autowired
+	private AuthenticationManager authenticationManager;
 	
 	@Autowired
 	private UserRepository userRepository;
@@ -28,16 +37,27 @@ public class UserServiceImplementation implements UserService {
 
 	@Override
 	public String loginUser(String username, String password) {
-		Optional<User> optionalUser = userRepository.findByUsername(username);
-	    if (optionalUser.isEmpty()) return "User Not Present";
+		try {
+	        Authentication authentication = authenticationManager.authenticate(
+	            new UsernamePasswordAuthenticationToken(username, password)
+	        );
 
-	    User user = optionalUser.get();
+	        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-	    if (encoder.matches(password, user.getPassword())) {
 	        return "Login Successful";
-	    } else {
-	        return "Incorrect Password";
+	    } catch (BadCredentialsException e) {
+	        return "Incorrect Username or Password";
+	    } catch (UsernameNotFoundException e) {
+	        return "User Not Found";
+	    } catch (Exception e) {
+	        return "Authentication Failed: " + e.getMessage();
 	    }
+	}
+
+	@Override
+	public List<User> getUserList() {
+		List<User> users = userRepository.findAll();
+		return users;
 	}
 
 }
