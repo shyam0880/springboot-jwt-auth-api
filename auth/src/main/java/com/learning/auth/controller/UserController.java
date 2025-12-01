@@ -3,6 +3,7 @@ package com.learning.auth.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.learning.auth.dto.UserDTO;
 import com.learning.auth.entity.User;
 import com.learning.auth.service.UserServiceImplementation;
 
@@ -20,7 +21,7 @@ public class UserController {
 	private UserServiceImplementation userServiceImplementation;
 	
 	@GetMapping("/get_user")
-	public List<User> getUserDetails() {
+	public List<UserDTO> getUserDetails() {
 		return userServiceImplementation.getUserList();
 	}
 	

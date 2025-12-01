@@ -4,9 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.learning.auth.dto.LoginResponse;
+import com.learning.auth.dto.UserDTO;
 import com.learning.auth.entity.User;
 import com.learning.auth.service.UserService;
 
@@ -24,9 +25,8 @@ public class AuthController {
 	}
 	
     @PostMapping("/login")
-    public String loginUser(@RequestParam String username,
-                            @RequestParam String password) {
-        return userService.loginUser(username, password);
+    public LoginResponse loginUser(@RequestBody UserDTO userDTO) {
+        return userService.loginUser(userDTO.getUsername(), userDTO.getPassword());
     }
 
 
